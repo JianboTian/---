@@ -1,0 +1,8 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	cout<<"Hello World,I'm TianJianbo 2012060030027"<<endl;
+	
+	return 0;
+}
