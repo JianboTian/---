@@ -1,0 +1,30 @@
+#include<iostream>
+using namespace std;
+
+class integer{
+private:
+  int num;
+  int *p;
+public:
+   integer(int n=0):num(n),p(new int[n]){           //动态分配内存
+	   for(int i=0;i<n;++i){                                 //初始化
+			p[i]=0;
+	   }
+   }
+   ~integer(){delete[] p;}          //析构函数
+   int& operator [](int n){        //重载,返回引用,以便可以对数组赋值
+        if(n<num&&n>=0) return p[n];
+        else {
+                  cerr<<"数组下标越界！";
+	          exit(-1);
+               }
+   }
+};
+
+int main()
+{
+	integer a(5);
+	cout<<a[2];
+	a[2]=5;
+      cout<<a[2];
+}
