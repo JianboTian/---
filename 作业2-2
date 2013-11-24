@@ -1,0 +1,66 @@
+
+华氏温度与摄氏温度
+#include <iostream.h>
+#include <iomanip>
+using namespace std;
+int main()
+{
+	double f,c;
+	cout<<"请输入一个华氏温度：";
+	cin>>f;
+	c = 5.0/9*(f-32);
+	cout<<setiosflags(ios::fixed)<<setprecision(2)<<"此华氏温度转化摄氏温度为："<<c<<endl;
+	return 0;	
+}
+
+
+
+求Cmn
+#include <iostream>
+using namespace std;
+
+bool visited[10];
+void dfs(int pos, int cnt,int n,int k,int a[])
+{
+	if(cnt==k)
+	{
+		for(int i = 0;i < n; i++)
+        if(visited[i]) cout<<a[i]<<' '; 
+		cout<<endl;
+		return;
+	}
+	if(pos==n) return;
+	if(!visited[pos]){
+		visited[pos]=true;
+		dfs(pos+1,cnt+1,n,k,a);
+		visited[pos]=false;
+	}
+	dfs(pos+1,cnt,n,k,a); 
+}
+int main(){
+	int i,n,k,a[10];
+	while(cin>>n>>k,n||k){
+		for(i=0;i<n;i++) a[i]=i+1;
+		dfs(0,0,n,k,a); 
+	}
+	return 0;
+}
+
+
+
+求x的y次幂
+
+#include <iostream>
+using namespace std;
+double power(double x,int y)
+{
+if(y==0) return 1.0;
+return power(x,y-1)*x;
+}
+int main()
+{
+int y;
+double x;
+cin>>x>>y; 
+cout<<power(x,y)<<endl;
+}
