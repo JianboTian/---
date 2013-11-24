@@ -1,0 +1,351 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+using namespace std;
+int M=100;
+static int M2=0;
+class Score{                //分数类
+private:
+	int score;
+public:
+	Score(int s=0){
+		score=s;
+	}
+	void set1(){
+		cout<<"请输入分数:"<<endl;
+		cin>>score;
+	}
+	void show1(){
+		cout<<":  "<<score<<endl;
+	}
+};
+
+
+class Subject{             //科目类
+private:
+	Score sc;
+	char subject[20];
+public:
+	Subject(){
+		for(int i=0;i<20;i++)
+			subject[i]=0;
+	}
+	void set2(){
+		cout<<"请输入科目名称:"<<endl;
+		cin>>subject;
+		sc.set1();
+	}
+	void show2(){
+		cout<<subject;
+		sc.show1();
+	}
+};
+
+
+class Student{                 //学生类
+private:
+	Subject p1[8];         
+	char name[20];
+	int num;
+	char S;
+	int n;
+public:
+	Student(){
+		for(int i=0;i<20;i++)
+			name[i]=0;
+		num=0;
+		S=0;
+	}
+	void set3();
+	void show3();
+	int getNU1(){return num;}
+	char *getNA1(){return name;}
+};
+
+
+
+void Student::show3(){            //学生类显示函数
+		int i;
+		cout<<"姓名:"<<name<<"\t性别:"<<S<<"\t学号:"<<num<<endl;
+		for(i=0;i<8;i++)
+			p1[i].show2();
+	}
+
+
+
+void Student::set3(){            //学生类修改函数
+		int i;
+		cout<<"请输入学生姓名:";
+		cin>>name;
+		cout<<"请输入该生学号:";
+		cin>>num;
+		cout<<"请输入该生性别:";
+		cin>>S;
+		cout<<"请输入每门课程的名字及分数."<<endl;
+		for(i=0;i<8;i++)
+			p1[i].set2();
+	}
+
+
+
+class Class{                    //班级类
+private:
+	Student stu;
+	char name2[20];
+	int num2;
+public:
+	Class(){
+		for(int i=0;i<20;i++)
+			name2[i]=0;
+		num2=0;
+	}
+	int getNU(){return stu.getNU1();}
+	string getNA(){return stu.getNA1();}
+	void set4(){
+		cout<<"请输入该生所在班级名称:";
+		cin>>name2;
+		cout<<"请输入该班班号:";
+		cin>>num2;
+		stu.set3();
+	}
+	void show4(){
+		cout<<"班级:"<<name2<<"\t班号:\t"<<num2;
+		stu.show3();
+	}
+	friend void Search1(Class c1[],int count1);        
+	friend void Search2(Class c2[],int count2);
+	friend void Update1(Class c3[],int count_d);
+	friend void Delete(Class c4[],int *count_c);
+	friend void Insert(Class c5[],int &count_a);
+}b[100];
+
+
+void Save(Class c6[],int count)      //记录存入文件函数
+{
+	
+	
+	fstream file("class.dat",ios::out|ios::binary);
+	if(!file)
+	{
+		cout<<"file coun't open."<<endl;
+		abort();
+	}
+	for(int i=0;i<count;i++)
+		file.write(reinterpret_cast<char*>(&c6[i]),sizeof(c6[i]));
+	file.close();
+}
+
+
+
+void Show(Class c7[])                 //显示记录函数
+{
+	int i=0;
+	for(i=0;c7[i].getNU()!=0;i++)
+		c7[i].show4();
+}
+
+
+
+void Insert(Class c5[],int &count_a)   //信息录入函数
+{
+	int i,in_number,n=0;
+	if(count_a==M)
+	{
+		cout<<"空间已满!";
+		return;
+	}
+	cout<<"请输入学生的学号："<<endl;
+	do
+	{
+		do
+		{
+			cin>>in_number;
+			for(i=0;i<count_a;i++)
+			{
+				if(c5[i].getNU()==in_number)
+					cout<<"已有相同的学号,请重新输入!"<<endl;
+				break;
+			}
+		}while(c5[i].getNU()==in_number);
+		if(in_number<1)
+			cout<<"输入错误，请重新输入大于零的整数!"<<endl;
+	}while(in_number<=0);
+	i=count_a;
+	c5[i].set4();
+	count_a++;
+	cout<<endl<<endl;n=n+1;
+	if(n!=0)
+		cout<<"学生成绩录入成功!"<<endl;
+}
+
+
+
+
+
+void Search1(Class c1[],int count1)    //按学号查询信息函数
+{
+	int i,number,flag=1,n=0;
+	cout<<"请输入所要查询的学生的学号:"<<endl;
+	do
+	{
+		cin>>number;
+		if(number<=0)
+			cout<<"输入错误，请重新输入大于零的整数!"<<endl;
+	}while(number<=0);
+	for(i=0;i<count1&&flag;i++)
+		if(c1[i].getNU()==number)
+		{
+			c1[i].show4();
+			flag=0;n=n+1;
+		}
+		if(n==0)
+			cout<<"没有查询到该学生的资料!"<<endl;
+}
+
+
+void Search2(Class c2[],int count2)  //按姓名查询信息函数
+{
+	int i,n=0;
+	char nam[20];
+	cout<<"请输入所要查询的学生的姓名:"<<endl;
+	cin>>nam;
+	for(i=0;i<count2;i++)
+		if(c2[i].getNA()==nam)
+		{
+			c2[i].show4();
+			n=n+1;
+		}
+		if(n==0)
+			cout<<"没有查询到该学生的资料!"<<endl;
+}
+
+
+void Update1(Class c3[],int count_d)  //信息修改函数
+{
+	int i,n=0,flag=1,m;
+	char nam[20];
+	cout<<"请输入所要修改的学生的姓名:"<<endl;
+	cin>>nam;
+	for(i=0;i<count_d&&flag;i++)
+	{
+		if(c3[i].getNA()==nam)
+		{
+			cout<<"请输入所要修改的学生的学号:"<<endl;
+			cin>>m;
+			for(i=0;i<count_d&&flag;i++)
+			{
+				if(c3[i].getNU()==m)
+				{
+					c3[i].set4();
+					flag=0;n=n+1;
+				}
+			}
+		}
+		break;
+	}
+	if(n!=0)
+		cout<<"修改成功!"<<endl;
+	if(n==0)
+		cout<<"没有查询到该学生的资料!"<<endl;
+}
+
+
+void Delete(Class c4[])  //信息删除函数
+{
+	fstream file("class.dat",ios_base::in|ios_base::out|ios_base::binary);
+	int i=0;
+	for(i=0;i<100;i++)
+	{
+		file.read(reinterpret_cast<char*>(&b[i]),sizeof(b[i]));	
+	}
+	for(i=0;b[i].getNU()!=0;i++)
+		;
+	M2=i;
+	Class c9;
+	int n=0,number,flag=1;
+    cout<<"请输入要要进行操作的学生的学号："<<endl;
+    cin>>number;
+    for(i=0;i<M2&&flag;i++)
+    {
+		if(c4[i].getNU()==number)
+		{
+			for(i;i<M2&&flag;i++)
+				c4[i]=c4[i+1];
+			flag=0;
+			(M2)--;n=1;
+			Save(b,M2);
+			break;
+		}
+	}
+	if(n==0)
+		cout<<"没有查询到可以删除的资料!"<<endl;
+	if(n!=0)
+		cout<<"资料删除成功!"<<endl;
+}
+
+
+
+int main()
+{
+	char a1;
+	
+	fstream file("class.dat",ios_base::in|ios_base::out|ios_base::binary);
+	cout<<"\t\t**************欢迎进入学生成绩管理系统**************"<<endl<<endl;
+	do
+	{
+		cout<<"请选择功能："<<endl;
+		cout<<"\t\t\ta.学生成绩查询"<<endl;
+		cout<<"\t\t\tb.学生成绩录入"<<endl;
+		cout<<"\t\t\tc.学生成绩删除"<<endl;
+		cout<<"\t\t\td.学生成绩修改"<<endl;
+		cout<<"\t\t\te.显示全部记录"<<endl;
+		cout<<"\t\t\tf.记录存入文件"<<endl;
+		cout<<"\t\t\tg.退出系统"<<endl;
+		int i=0;
+		for(i=0;i<100;i++)
+		{
+			file.read(reinterpret_cast<char*>(&b[i]),sizeof(b[i]));	
+		}
+		for(i=0;b[i].getNU()!=0;i++)
+				;
+		M2=i;
+		cin>>a1;
+		switch(a1)
+		{
+		case ‘a':
+			{
+				cout<<"\t\t\t请继续选择:"<<endl;
+				cout<<"\t\t\t\t1.按学号查询信息"<<endl;
+				cout<<"\t\t\t\t2.按姓名查询信息"<<endl;
+				int x;
+				cin>>x;
+				switch(x)
+				{
+				case 1:Search1(b,M2);break;
+				case 2:Search2(b,M2);break;
+				default:cout<<"选择错误，请重新选择!"<<endl;
+				}
+			}
+			break;
+		case ‘b':Insert(b,M2);break;
+		case ‘c':
+			{
+				file.close();
+				Delete(b);
+			}break;
+		case ‘d':Update1(b,M2);break;
+		case ‘e':Show(b);break;
+		case ‘f':
+			{
+				file.close();
+				Save(b,M2);
+				cout<<"保存文件成功!"<<endl;
+				fstream file("class.dat",ios_base::in|ios_base::out|ios_base::binary);
+			};break;
+		case ‘g':{file.close();break;}
+		default:cout<<"选择错误，请重新选择!"<<endl;
+		}
+	}while(a1!='g');
+	return 0;
+}
+ 
